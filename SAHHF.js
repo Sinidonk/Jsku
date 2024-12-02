@@ -1,41 +1,52 @@
 const Kepala = document.querySelector('.Kepala');
-        const Kaki = document.querySelector('.Kaki');
-        const iframe = document.getElementById('badan');
-        let isVisible = true; // Menandakan apakah Kepala dan Kaki terlihat
-        let canToggle = true; // Menandakan apakah interaksi bisa dilakukan
+const Kaki = document.querySelector('.Kaki');
+let isVisible = false; // Elemen mulai dalam keadaan tersembunyi
 
-        // Fungsi untuk menyembunyikan Kepala dan Kaki
-        function hideKepalaKaki() {
-            Kepala.style.transform = 'translateX(-50%) translateY(-100%)'; // Menggeser Kepala ke atas sambil tetap di tengah horizontal
-    Kaki.style.transform = 'translateX(-50%) translateY(100%)'; // Menggeser Kaki ke bawah sambil tetap di tengah horizontal
-            isVisible = false;
-        }
+// Fungsi untuk menyembunyikan Kepala dan Kaki
+function hideKepalaKaki() {
+    Kepala.style.transform = 'translateX(-50%) translateY(-100%)'; // Menyembunyikan Kepala
+    Kaki.style.transform = 'translateX(-50%) translateY(100%)';    // Menyembunyikan Kaki
+    isVisible = false;
+}
 
-        // Fungsi untuk menampilkan Kepala dan Kaki
-        function showKepalaKaki() {
-            Kepala.style.transform = 'translateX(-50%) translateY(0)'; // Mengembalikan Kepala ke posisi awal sambil tetap di tengah horizontal
-    Kaki.style.transform = 'translateX(-50%) translateY(0)'; // Mengembalikan Kaki ke posisi awal sambil tetap di tengah horizontal
-            isVisible = true;
-        }
+// Fungsi untuk menampilkan Kepala dan Kaki
+function showKepalaKaki() {
+    Kepala.style.transform = 'translateX(-50%) translateY(0)';    // Menampilkan Kepala
+    Kaki.style.transform = 'translateX(-50%) translateY(0)';      // Menampilkan Kaki
+    isVisible = true;
+}
 
-        // Menangani pesan dari iframe
-        window.addEventListener('message', (event) => {
-            // Hanya proses pesan yang berasal dari iframe
-            if (event.origin !== window.location.origin) return;
+// Awalnya sembunyikan elemen
+hideKepalaKaki();
 
-            if (event.data === 'scrolling' && isVisible && canToggle) {
-                hideKepalaKaki();
-                canToggle = false; // Menandakan bahwa interaksi telah terjadi, tidak bisa langsung diulang
-            }
+// Event listener untuk menerima pesan dari iframe
+window.addEventListener('message', (event) => {
+    // Verifikasi pesan yang datang hanya dari iframe yang benar
+    if (event.origin !== window.location.origin) return;
 
-            // Pesan untuk double-click dalam iframe
-            if (event.data === 'doubleClickInIframe') {
-                showKepalaKaki();
-                canToggle = false; // Menandakan bahwa double-click telah terjadi, tidak bisa langsung diulang
-            }
-        });
+    // Pesan untuk scrolling dalam iframe
+    if (event.data === 'scrolling' && isVisible) {
+        hideKepalaKaki(); // Menyembunyikan elemen jika menerima pesan "scrolling"
+    }
 
-        // Reset status interaksi setelah 2 detik untuk memungkinkan interaksi baru
-        setInterval(() => {
-            canToggle = true; // Reset agar interaksi dapat dilakukan ulang
-        }, 1000); // Reset status setiap 2 detik
+    // Pesan untuk double-click dalam iframe
+    if (event.data === 'doubleClickInIframe') {
+        showKepalaKaki(); // Menampilkan elemen jika menerima pesan "doubleClickInIframe"
+    }
+});
+
+// Event listener untuk double-click pada layar
+document.addEventListener('dblclick', () => {
+    if (isVisible) {
+        hideKepalaKaki(); // Jika elemen terlihat, sembunyikan
+    } else {
+        showKepalaKaki(); // Jika elemen tersembunyi, tampilkan
+    }
+});
+
+// Event listener untuk scroll pada layar
+window.addEventListener('scroll', () => {
+    if (isVisible) {
+        hideKepalaKaki(); // Sembunyikan elemen saat scroll pada halaman utama
+    }
+});
