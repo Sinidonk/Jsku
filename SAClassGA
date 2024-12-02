@@ -1,0 +1,154 @@
+let state = "Azam"; // State awal diatur ke "Azam"
+const button = document.getElementById("susun");
+
+// Fungsi untuk menyembunyikan semua elemen dalam iframe
+function hideAllElements() {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+    const arabElements = iframeDocument.querySelectorAll(".arab");
+    const latinElements = iframeDocument.querySelectorAll(".latin");
+    const azamElements = iframeDocument.querySelectorAll(".azam");
+    const artiElements = iframeDocument.querySelectorAll(".arti");
+    const judulElements = iframeDocument.querySelectorAll(".judul");
+
+    arabElements.forEach(el => el.style.display = "none");
+    latinElements.forEach(el => el.style.display = "none");
+    azamElements.forEach(el => el.style.display = "none");
+    artiElements.forEach(el => el.style.display = "none");
+    judulElements.forEach(el => el.style.display = "block");
+}
+
+// Fungsi untuk menggabungkan elemen arab dengan judul
+function combineArabicWithTitle() {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+    const judulElements = iframeDocument.querySelectorAll(".judul");
+
+    hideAllElements(); // Sembunyikan semua elemen terlebih dahulu
+
+    judulElements.forEach(judul => {
+        let combinedDiv = document.createElement("div");
+        combinedDiv.className = "surat"; // Div baru dengan class surat
+        combinedDiv.style.textAlign = "justify"; // Justify isi div
+
+        let sibling = judul.nextElementSibling;
+        let combinedText = "";
+
+        // Gabungkan semua teks arab di bawah judul
+        while (sibling && !sibling.classList.contains("judul")) {
+            if (sibling.classList.contains("arab")) {
+                combinedText += sibling.innerHTML + " ";  // Gunakan innerHTML untuk mempertahankan <br> dan tag lainnya
+                sibling.style.display = "none"; // Sembunyikan elemen Arab asli
+            }
+            sibling = sibling.nextElementSibling;
+        }
+
+        // Tambahkan teks gabungan ke dalam div surat
+        if (combinedText.trim()) {
+            combinedDiv.innerHTML = combinedText.trim();  // Gunakan innerHTML untuk menambahkan elemen HTML (seperti <br>)
+            judul.insertAdjacentElement("afterend", combinedDiv); // Tempelkan setelah judul
+        }
+
+        // Pastikan judul tetap ditampilkan
+        judul.style.display = "block"; 
+    });
+}
+
+// Fungsi untuk memulihkan elemen asli (elemen arab)
+function restoreOriginalElements() {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+    const combinedDivs = iframeDocument.querySelectorAll(".surat");
+    combinedDivs.forEach(div => div.remove());  // Hapus div surat (gabungan arab)
+
+    const arabElements = iframeDocument.querySelectorAll(".arab");
+    arabElements.forEach(el => el.style.display = "block"); // Pastikan arab ditampilkan kembali
+}
+
+// Fungsi untuk menampilkan elemen sesuai state
+function showStateElements(state) {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+    const arabElements = iframeDocument.querySelectorAll(".arab");
+    const latinElements = iframeDocument.querySelectorAll(".latin");
+    const azamElements = iframeDocument.querySelectorAll(".azam");
+    const artiElements = iframeDocument.querySelectorAll(".arti");
+    const judulElements = iframeDocument.querySelectorAll(".judul");
+
+    hideAllElements(); // Sembunyikan semua elemen terlebih dahulu
+
+    // Pastikan hanya menampilkan elemen sesuai dengan state yang dipilih
+    if (state === "Arab") {
+        combineArabicWithTitle(); // Gabungkan elemen arab sesuai judul
+    } else if (state === "Azam") {
+        restoreOriginalElements();
+        azamElements.forEach(el => el.style.display = "block");
+        judulElements.forEach(el => el.style.display = "block");
+        arabElements.forEach(el => el.style.display = "block");
+    } else if (state === "Latin") {
+        restoreOriginalElements();
+        latinElements.forEach(el => el.style.display = "block");
+        judulElements.forEach(el => el.style.display = "block");
+        arabElements.forEach(el => el.style.display = "block");
+    } else if (state === "Arti") {
+        restoreOriginalElements();
+        artiElements.forEach(el => el.style.display = "block");
+        judulElements.forEach(el => el.style.display = "block");
+        arabElements.forEach(el => el.style.display = "block");
+    } else if (state === "Semua") {
+        restoreOriginalElements();
+        arabElements.forEach(el => el.style.display = "block");
+        latinElements.forEach(el => el.style.display = "block");
+        azamElements.forEach(el => el.style.display = "block");
+        artiElements.forEach(el => el.style.display = "block");
+        judulElements.forEach(el => el.style.display = "block");
+    }
+}
+
+// Fungsi untuk mengatur tombol berikutnya dan mengganti background div "susun"
+function updateButtonState() {
+    if (state === "Azam") {
+        button.style.backgroundImage = "url('Gbr/icoC.png')";
+        state = "Latin";
+    } else if (state === "Latin") {
+        button.style.backgroundImage = "url('Gbr/icoD.png')";
+        state = "Arti";
+    } else if (state === "Arti") {
+        button.style.backgroundImage = "url('Gbr/icoE.png')";
+        state = "Semua";
+    } else if (state === "Semua") {
+        button.style.backgroundImage = "url('Gbr/icoA.png')";
+        state = "Arab";
+    } else if (state === "Arab") {
+        button.style.backgroundImage = "url('Gbr/icoB.png')";
+        state = "Azam";
+    }
+}
+
+// Fungsi untuk memuat konten dalam iframe tanpa mengganggu status menu
+function loadIframeContent(url) {
+    const iframe = document.getElementById('Badan');
+    iframe.src = url;
+
+    iframe.onload = () => {
+        setTimeout(() => {
+            combineArabicWithTitle(); // Gabungkan elemen arab dengan judul saat pertama kali memuat
+            showStateElements(state); // Tampilkan elemen sesuai dengan state setelah iframe dimuat
+        }, 100); // Tunggu sebentar agar iframe sepenuhnya dimuat
+    };
+}
+
+// Event listener untuk tombol
+button.addEventListener("click", () => {
+    showStateElements(state);
+    updateButtonState();  // Perbarui background tombol dan ganti state
+});
+
+// Fungsi untuk memanggil konten menu dan memuat URL dalam iframe
+function selectMenu(event, url) {
+    event.stopPropagation(); // Cegah event klik menyebar
+    loadIframeContent(url); // Muat konten ke dalam iframe
+}
+
+// Saat halaman pertama kali dimuat
+document.addEventListener("DOMContentLoaded", () => {
+    button.style.backgroundImage = "url('Gbr/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
+    document.getElementById('Badan').style.display = 'block'; // Menampilkan iframe
+    setTimeout(combineArabicWithTitle, 100); // Tunggu sebentar sebelum memproses elemen
+});
