@@ -2,7 +2,7 @@
 function MenuUtama() {
     const SubMenu1 = document.getElementById('SubMenu1');
     if (SubMenu1) {
-        SubMenu1.classList.toggle('open');  // Menggunakan class toggle agar menu terbuka/tutup
+        SubMenu1.classList.toggle('open');  // Toggle buka/tutup menu utama
     }
 }
 
@@ -11,134 +11,58 @@ function Terpilih(event, url) {
     event.preventDefault();  // Mencegah perilaku default link
     const iframe = document.getElementById('Badan');
     if (iframe) {
-        iframe.src = url;  // Mengatur src iframe dengan URL baru
-        iframe.onload = handleIframeContent; // Memanggil handleIframeContent saat iframe selesai dimuat
+        iframe.src = url;  // Set src iframe
+        iframe.onload = showInitialElements; // Panggil saat iframe selesai dimuat
     }
-    closeAllMenus();  // Menutup semua menu setelah pemilihan
+    closeAllMenus();  // Tutup semua menu setelah pemilihan
 }
 
 // Fungsi untuk toggle submenu
-let lastClickedSubMenu = null;  // Untuk menyimpan submenu terakhir yang diklik
+let lastClickedSubMenu = null;
 
 function toggleSubMenu(event, submenuId) {
-    event.stopPropagation();  // Menghentikan event agar tidak bubble ke elemen lain
-
+    event.stopPropagation();  // Hentikan bubbling event
     const submenu = document.getElementById(submenuId);
     const panah = event.target.querySelector('.Tpanah');
-    
-    // Jika submenu yang sama diklik dua kali, tutup submenu tersebut
+
     if (submenu === lastClickedSubMenu) {
-        submenu.style.display = "none";  // Menutup submenu
+        submenu.style.display = "none";  // Tutup submenu
         if (panah) {
-            panah.innerHTML = "&#9654;";  // Mengembalikan panah menjadi ▶
+            panah.innerHTML = "&#9654;";  // Kembali ke panah ▶
         }
-        lastClickedSubMenu = null;  // Reset lastClickedSubMenu
-        return;  // Keluar dari fungsi jika submenu yang sama diklik
+        lastClickedSubMenu = null;
+        return;
     }
 
-    // Tutup semua submenu terlebih dahulu
     closeAllSubMenus();
 
     if (submenu) {
-        submenu.style.display = "block";  // Membuka submenu yang baru dipilih
+        submenu.style.display = "block";  // Buka submenu
         if (panah) {
-            panah.innerHTML = "&#9660;";  // Mengubah panah menjadi ▼
+            panah.innerHTML = "&#9660;";  // Ubah panah ke ▼
         }
     }
 
-    // Update submenu yang terakhir diklik
     lastClickedSubMenu = submenu;
 }
 
 // Fungsi untuk menutup semua submenu
 function closeAllSubMenus() {
     document.querySelectorAll('.Terpilih').forEach(sub => {
-        sub.style.display = "none"; // Menyembunyikan submenu
+        sub.style.display = "none";  // Tutup semua submenu
         const panah = sub.previousElementSibling?.querySelector('.Tpanah');
-        if (panah) panah.innerHTML = "&#9654;";  // Mengembalikan panah menjadi ▶
+        if (panah) panah.innerHTML = "&#9654;";  // Reset panah ▶
     });
 }
 
-// Fungsi untuk menutup semua menu saat klik di luar menu
+// Fungsi untuk menutup semua menu
 function closeAllMenus() {
-    closeAllSubMenus();  // Menutup semua submenu yang terbuka
-    
-    // Menutup menu utama
+    closeAllSubMenus();
     const SubMenu1 = document.getElementById('SubMenu1');
     if (SubMenu1) {
-        SubMenu1.classList.remove('open');  // Menutup menu utama
+        SubMenu1.classList.remove('open');  // Tutup menu utama
     }
 }
-
-// Fungsi untuk menangani klik di luar menu
-document.addEventListener('click', function (event) {
-    const SubMenu1 = document.getElementById('SubMenu1');
-    const MenuUtama = document.querySelector('.MenuUtama');
-    if (SubMenu1 && MenuUtama && !SubMenu1.contains(event.target) && !MenuUtama.contains(event.target)) {
-        closeAllMenus();  // Menutup menu saat klik di luar menu utama
-    }
-});
-
-// Fungsi untuk menangani konten yang dimuat dalam iframe
-function handleIframeContent() {
-    const iframe = document.getElementById('Badan');
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-    // Menambahkan event listener klik di dalam iframe
-    iframeDoc.addEventListener('click', function () {
-        iframe.contentWindow.postMessage('iframeClick', '*');  // Kirim pesan ke dokumen utama
-    });
-
-    // Pastikan elemen .surat tidak ada sebelumnya sebelum menambahkannya
-    const existingDivSurat = iframeDoc.querySelector('.surat');
-    if (existingDivSurat) {
-        return; // Menghindari pembuatan duplikat, keluar jika sudah ada
-    }
-
-    // Menghapus elemen .surat jika ada
-    const existingSuratElements = iframeDoc.querySelectorAll('.surat');
-    existingSuratElements.forEach(el => {
-        el.remove();
-    });
-
-    // Membuat wadah untuk class .surat
-    const DivSurat = iframeDoc.createElement('div');
-    DivSurat.classList.add('surat');
-    DivSurat.style.textAlign = 'justify';
-    DivSurat.style.lineHeight = '1.6';
-    DivSurat.style.margin = '10px 0';
-
-    // Menggabungkan elemen-elemen .arab ke dalam wadah surat tanpa class .arab
-    const arabElements = iframeDoc.querySelectorAll('.arab');
-    arabElements.forEach(arabEl => {
-        // Cloning elemen arab dan menghapus class 'arab'
-        const arabClone = arabEl.cloneNode(true);
-        arabClone.classList.remove('arab');  // Menghapus class 'arab' agar tidak duplikat
-
-        // Menjaga <br> tetap terlihat
-        const brElements = arabClone.querySelectorAll('br');
-        brElements.forEach(br => {
-            br.style.display = 'inline';  // Menampilkan <br> sebagai baris baru
-        });
-
-        // Menambahkan elemen arab yang telah digabungkan ke wadah surat
-        DivSurat.appendChild(arabClone);
-    });
-
-    // Menyembunyikan elemen selain .judul dan .surat
-    iframeDoc.querySelectorAll('.latin, .azam, .arti').forEach(el => {
-        el.style.display = 'none';  // Menyembunyikan elemen lainnya
-    });
-
-    // Menampilkan hanya class .judul
-    const judulElements = iframeDoc.querySelectorAll('.judul');
-    judulElements.forEach(judulElement => {
-        judulElement.style.display = 'block';  // Pastikan judul terlihat
-    });
-}
-
-// Event listener untuk menangani konten iframe setelah dimuat
-document.getElementById('Badan').addEventListener('load', handleIframeContent);
 
 // Event listener untuk menerima pesan dari iframe
 window.addEventListener('message', function (event) {
@@ -146,3 +70,65 @@ window.addEventListener('message', function (event) {
         closeAllMenus();  // Tutup semua menu saat klik di dalam iframe
     }
 });
+
+// Event listener untuk iframe load
+document.getElementById('Badan').addEventListener('load', showInitialElements);
+
+
+// Fungsi untuk menyembunyikan semua elemen kecuali judul dan surat
+function hideAllElements() {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+
+    iframeDocument.querySelectorAll('.latin, .azam, .arti').forEach(el => {
+        el.style.display = 'none';  // Sembunyikan elemen selain judul dan surat
+    });
+
+    iframeDocument.querySelectorAll('.judul').forEach(judul => {
+        judul.style.display = 'block';  // Tampilkan elemen judul
+    });
+
+    iframeDocument.querySelectorAll('.surat').forEach(el => {
+        el.style.display = 'block';  // Tampilkan elemen surat jika ada
+    });
+}
+
+// Fungsi untuk menampilkan elemen judul dan menggabungkan elemen arab dalam div surat
+function showInitialElements() {
+    const iframeDocument = document.getElementById('Badan').contentWindow.document;
+    const judulElements = iframeDocument.querySelectorAll(".judul");
+
+    hideAllElements();  // Sembunyikan elemen lainnya
+
+    judulElements.forEach(judul => {
+        // Hapus elemen .surat lama jika ada, sebelum membuat yang baru
+        const existingSurat = judul.nextElementSibling;
+        if (existingSurat && existingSurat.classList.contains('surat')) {
+            existingSurat.remove();
+        }
+
+        let combinedText = "";  // Reset combinedText untuk setiap judul
+        let sibling = judul.nextElementSibling;
+        let hasArab = false;    // Cek apakah ada elemen arab
+
+        // Gabungkan elemen .arab di bawah judul
+        while (sibling && !sibling.classList.contains("judul")) {
+            if (sibling.classList.contains("arab")) {
+                combinedText += sibling.innerHTML + " ";  // Gabungkan konten arab
+                sibling.style.display = 'none';  // Sembunyikan elemen arab asli
+                hasArab = true;
+            }
+            sibling = sibling.nextElementSibling;
+        }
+
+        // Buat elemen .surat baru jika ada teks arab
+        if (hasArab) {
+            const suratDiv = iframeDocument.createElement("div");
+            suratDiv.className = "surat";  // Tetapkan class surat
+            suratDiv.style.textAlign = "justify";
+            suratDiv.style.lineHeight = "1.6";
+            suratDiv.innerHTML = combinedText.trim();  // Isi div surat dengan teks gabungan
+            judul.insertAdjacentElement("afterend", suratDiv);  // Tempelkan surat setelah judul
+        }
+    });
+}
+
