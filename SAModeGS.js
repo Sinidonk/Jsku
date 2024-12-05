@@ -1,4 +1,4 @@
-// Fungsi untuk mengganti background dan teks di dalam iframe
+// Fungsi untuk mengganti background dan teks di dalam iframe dan body utama
 const colorModes = [
   { bg: 'white', text: 'black' }, // Default
   { bg: 'url(Gbr/V1A.jpg)', text: 'white', isImage: true }, // Background-image 1
@@ -14,36 +14,51 @@ const colorModes = [
 
 let modeIndex = 0; // Indeks awal untuk mode warna
 
-// Event listener untuk mode warna
-document.getElementById('Mode').addEventListener('click', () => {
+// Fungsi untuk mengubah background dan teks di dalam iframe dan body utama
+function changeBackgroundAndText() {
   const iframe = document.getElementById('Badan');
   const iframeDocument = iframe.contentWindow.document; // Mengakses konten di dalam iframe
-
-  modeIndex = (modeIndex + 1) % colorModes.length; // Loop kembali ke awal setelah mode terakhir
   const selectedMode = colorModes[modeIndex];
 
+  // Ubah background dan teks di body utama (halaman utama)
   if (selectedMode.isImage) {
-    // Jika mode adalah background image
+    document.body.style.backgroundColor = ''; // Reset background color
+    document.body.style.backgroundImage = selectedMode.bg; // Set background image
+    document.body.style.backgroundSize = 'cover'; // Supaya gambar penuh
+    document.body.style.backgroundRepeat = 'no-repeat'; // Jangan ulang gambar
+    document.body.style.backgroundAttachment = 'fixed'; // Tambahkan agar background tetap saat scrolling
+  } else {
+    document.body.style.backgroundImage = ''; // Reset background image
+    document.body.style.backgroundColor = selectedMode.bg; // Set background color
+    document.body.style.backgroundAttachment = ''; // Reset background attachment
+  }
+  document.body.style.color = selectedMode.text; // Ubah warna teks di body utama
+
+  // Ubah background dan teks di dalam iframe
+  if (selectedMode.isImage) {
     iframeDocument.body.style.backgroundColor = ''; // Reset background color
     iframeDocument.body.style.backgroundImage = selectedMode.bg; // Set background image
     iframeDocument.body.style.backgroundSize = 'cover'; // Supaya gambar penuh
     iframeDocument.body.style.backgroundRepeat = 'no-repeat'; // Jangan ulang gambar
     iframeDocument.body.style.backgroundAttachment = 'fixed'; // Tambahkan agar background tetap saat scrolling
   } else {
-    // Jika mode adalah background color
     iframeDocument.body.style.backgroundImage = ''; // Reset background image
     iframeDocument.body.style.backgroundColor = selectedMode.bg; // Set background color
     iframeDocument.body.style.backgroundAttachment = ''; // Reset background attachment
   }
-
-  // Ubah warna teks di dalam iframe
-  iframeDocument.body.style.color = selectedMode.text;
+  iframeDocument.body.style.color = selectedMode.text; // Ubah warna teks di dalam iframe
 
   // Ubah warna teks semua elemen anak dalam iframe
   const childElements = iframeDocument.querySelectorAll('*');
   childElements.forEach(child => {
     child.style.color = selectedMode.text; // Mengubah warna teks
   });
+}
+
+// Event listener untuk mode warna
+document.getElementById('Mode').addEventListener('click', () => {
+  modeIndex = (modeIndex + 1) % colorModes.length; // Loop kembali ke awal setelah mode terakhir
+  changeBackgroundAndText(); // Panggil fungsi untuk mengubah background dan teks
 });
 
 // Fungsi untuk menampilkan iframe setelah tombol Panggil diklik
@@ -52,4 +67,4 @@ function tampilkanIframe() {
 }
 
 // Event listener untuk tombol Panggil
-document.getElementById('Mode').addEventListener('click', tampilkanIframe);
+document.getElementById('panggilBtn').addEventListener('click', tampilkanIframe);
