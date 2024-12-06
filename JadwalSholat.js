@@ -674,12 +674,12 @@ else tz="";
 
 var html='<table id="timetable">';
 html+=
-    '<tr><th colspan="3" style="vertical-align: middle;color:yellow;"><img src="Gbr/JCal.gif" alt="calendar" style="height:30px; width:auto; vertical-align: middle;">'+tanggal+'</th></tr>';
+    '<tr><th colspan="3" style="vertical-align: middle;color:yellow;"><img src="https://sinidonk.github.io/Gbrku/JCal.gif" alt="calendar" style="height:30px; width:auto; vertical-align: middle;">'+tanggal+'</th></tr>';
     
 html+='<tr class="blank_row"><td colspan="3"></td></tr>';
 
 for(var i in list){
-	html+='<tr><td style="text-align:left; vertical-align: middle;color:yellow;"><img src="Gbr/JCal.gif" alt="clock" style="height:30px; width:auto; vertical-align: middle;"> '+list[i]+'</td>';
+	html+='<tr><td style="text-align:left; vertical-align: middle;color:yellow;"><img src="https://sinidonk.github.io/Gbrku/JCal.gif" alt="clock" style="height:30px; width:auto; vertical-align: middle;"> '+list[i]+'</td>';
 	html+='<td style="width:auto;text-align:center;color:yellow"><strong>:</strong></td>';
 	html+='<td style="width:47%;text-align:right; font-size:16px; vertical-align: middle; color:gold;">'+times[list[i].toLowerCase()]+' '+' '+tz+'</td></tr>';
 };
