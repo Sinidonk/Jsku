@@ -12,7 +12,7 @@ body {
 
 #BodyJam {
     position: relative;
-    background: url('https://sinidonk.github.io/Gbrku/Jamku.png') no-repeat center/cover;
+    background: url('Gbr/Jamku.png') no-repeat center/cover;
     border: 5px double yellow;
     border-radius: 50%;
     margin: auto;
@@ -200,3 +200,8 @@ function gmod(a, b) {
 
 // Panggil fungsi untuk menampilkan Tanggal Jawa
 getJavaneseDate();
+
+//Panggil Arah Qiblat
+document.getElementById('BodyJam').addEventListener('click', function() {
+    window.location.href = "https://qiblafinder.withgoogle.com/";  // Arahkan ke URL
+  });
