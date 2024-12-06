@@ -1,15 +1,15 @@
 // Fungsi untuk mengganti background dan teks di dalam iframe dan body utama
 const colorModes = [
   { bg: 'white', text: 'black' }, // Default
-  { bg: 'url(Gbr/V1A.jpg)', text: 'white', isImage: true }, // Background-image 1
+  { bg: 'url(https://sinidonk.github.io/Gbrku/V1A.jpg)', text: 'white', isImage: true }, // Background-image 1
   { bg: 'green', text: 'yellow' }, // Hijau dan kuning
-  { bg: 'url(Gbr/V1B.jpg)', text: 'black', isImage: true }, // Background-image 2
+  { bg: 'url(https://sinidonk.github.io/Gbrku/V1B.jpg)', text: 'black', isImage: true }, // Background-image 2
   { bg: 'blue', text: 'white' }, // Biru dan putih
-  { bg: 'url(Gbr/V1C.jpg)', text: 'black', isImage: true }, // Background-image 3
+  { bg: 'url(https://sinidonk.github.io/Gbrku/V1C.jpg)', text: 'black', isImage: true }, // Background-image 3
   { bg: 'brown', text: 'gold' }, // Coklat dan emas
-  { bg: 'url(Gbr/V1D.jpg)', text: 'white', isImage: true }, // Background-image 4
+  { bg: 'url(https://sinidonk.github.io/Gbrku/V1D.jpg)', text: 'white', isImage: true }, // Background-image 4
   { bg: 'grey', text: 'black' }, // Abu-abu dan hitam
-  { bg: 'url(Gbr/V1E.jpg)', text: 'yellow', isImage: true } // Background-image 5
+  { bg: 'url(https://sinidonk.github.io/Gbrku/V1E.jpg)', text: 'yellow', isImage: true } // Background-image 5
 ];
 
 let modeIndex = 0; // Indeks awal untuk mode warna
