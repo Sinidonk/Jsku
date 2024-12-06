@@ -23,3 +23,8 @@ if (window.top !== window.self) {
         console.log('Iframe double-click detected');
     });
 }
+
+// Kirim pesan ke halaman utama (parent window) untuk menutup menu saat ada interaksi
+        document.addEventListener('click', function() {
+            parent.postMessage("closeMenu", "*"); // Mengirim pesan ke halaman utama
+        });
