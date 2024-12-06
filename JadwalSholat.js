@@ -42,7 +42,7 @@ function PrayTimes(method) {
 	timeNames = {
 		imsak    : "Imsak",
 		subuh    : "Subuh",
-		dhuhur   : "Dhuhur",
+		dzuhur   : "Dzuhur",
 		ashar    : "Ashar",
 		maghrib  : "Maghrib",
 		isya     : "Isya",
@@ -70,7 +70,7 @@ function PrayTimes(method) {
 	// do not change anything here; use adjust method instead
 	setting = {  
 		imsak    : '10 min',
-		dhuhur   : '0 min',  
+		dzuhur   : '0 min',  
 		ashar    : 'Standard',
 		highLats : 'NightMiddle'
 	},
@@ -262,14 +262,14 @@ function PrayTimes(method) {
 		var imsak   = this.sunAngleTime(this.eval(params.imsak), times.imsak, 'ccw');
 		var subuh   = this.sunAngleTime(this.eval(params.subuh), times.subuh, 'ccw');
 		var sunrise = this.sunAngleTime(this.riseSetAngle(), times.sunrise, 'ccw');  
-		var dhuhur  = this.midDay(times.dhuhur);
+		var dzuhur  = this.midDay(times.dzuhur);
 		var ashar   = this.asharTime(this.asharFactor(params.ashar), times.ashar);
 		var sunset  = this.sunAngleTime(this.riseSetAngle(), times.sunset);;
 		var maghrib = this.sunAngleTime(this.eval(params.maghrib), times.maghrib);
 		var isya    = this.sunAngleTime(this.eval(params.isya), times.isya);
 
 		return {
-			imsak: imsak, subuh: subuh, sunrise: sunrise, dhuhur: dhuhur, 
+			imsak: imsak, subuh: subuh, sunrise: sunrise, dzuhur: dzuhur, 
 			ashar: ashar, sunset: sunset, maghrib: maghrib, isya: isya
 		};
 	},
@@ -279,7 +279,7 @@ function PrayTimes(method) {
 	computeTimes: function() {
 		// default times
 		var times = { 
-			imsak: 5, subuh: 5, sunrise: 6, dhuhur: 12, 
+			imsak: 5, subuh: 5, sunrise: 6, dzuhur: 12, 
 			ashar: 13, sunset: 18, maghrib: 18, isya: 18
 		};
 
@@ -314,7 +314,7 @@ function PrayTimes(method) {
 			times.maghrib = times.sunset+ this.eval(params.maghrib)/ 60;
 		if (this.isMin(params.isya))
 			times.isya = times.maghrib+ this.eval(params.isya)/ 60;
-		times.dhuhur += this.eval(params.dhuhur)/ 60; 
+		times.dzuhur += this.eval(params.dzuhur)/ 60; 
 
 		return times;
 	},
@@ -653,10 +653,10 @@ function PilihKota(){
 	}
 	
 function JadwalSholat(){
-	prayTimes.tune({imsak:2,subuh:2,dhuhur:2,ashar:2,maghrib:2,isya:2});
+	prayTimes.tune({imsak:2,subuh:2,dzuhur:2,ashar:2,maghrib:2,isya:2});
 	var date=new Date();
 	var times=prayTimes.getTimes(date,geo,timezone);
-	var list=["Imsak","Subuh","Dhuhur","Ashar","Maghrib","Isya"];
+	var list=["Imsak","Subuh","Dzuhur","Ashar","Maghrib","Isya"];
 	var thisday=date.getDay();
 	var thismonth=date.getMonth();
 	var thisdate=date.getDate();
@@ -672,26 +672,29 @@ else if(timezone==+8){tz="WITA"}
 else if(timezone==+9){tz="WIT"}
 else tz="";
 
-var html='<table id="timetable">';
+var
+    html='<center>';
+    html+='<table id="Waktu">';
 html+=
-    '<tr><th colspan="3" style="vertical-align: middle;color:yellow;"><img src="https://sinidonk.github.io/Gbrku/JCal.gif" alt="calendar" style="height:30px; width:auto; vertical-align: middle;">'+tanggal+'</th></tr>';
+    '<tr><th colspan="3" style="vertical-align: middle;color:yellow;"><img src="Gbr/JCal.gif" alt="calendar" style="height:30px; width:auto; vertical-align: middle;">'+tanggal+'</th></tr>';
     
 html+='<tr class="blank_row"><td colspan="3"></td></tr>';
 
 for(var i in list){
-	html+='<tr><td style="text-align:left; vertical-align: middle;color:yellow;"><img src="https://sinidonk.github.io/Gbrku/JCal.gif" alt="clock" style="height:30px; width:auto; vertical-align: middle;"> '+list[i]+'</td>';
+	html+='<tr><td style="text-align:left; vertical-align: middle;color:yellow;"><img src="Gbr/JCal.gif" alt="clock" style="height:30px; width:auto; vertical-align: middle;"> '+list[i]+'</td>';
 	html+='<td style="width:auto;text-align:center;color:yellow"><strong>:</strong></td>';
 	html+='<td style="width:47%;text-align:right; font-size:16px; vertical-align: middle; color:gold;">'+times[list[i].toLowerCase()]+' '+' '+tz+'</td></tr>';
 };
 html+='</table>';
+    html+='</center>';
 document.getElementById('JadwalSholat').innerHTML=html;
 
 }
 
 	
-	function WidgetJadwalSholat(){
+	function WJSholat(){
 		PilihKota();
 		JadwalSholat();
 	}
 
-window.onload=function(){WidgetJadwalSholat()};
+window.onload=function(){WJSholat()};
