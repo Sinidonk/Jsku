@@ -148,7 +148,7 @@ function selectMenu(event, url) {
 
 // Saat halaman pertama kali dimuat
 document.addEventListener("DOMContentLoaded", () => {
-    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
+    button.style.backgroundImage = "url('Gbr/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
     document.getElementById('Badan').style.display = 'block'; // Menampilkan iframe
     setTimeout(combineArabicWithTitle, 100); // Tunggu sebentar sebelum memproses elemen
 });
