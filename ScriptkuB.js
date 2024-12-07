@@ -41,6 +41,19 @@
  }
  });
 
+document.querySelectorAll('.menu li.has-submenu').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.stopPropagation(); // Mencegah bubbling agar tidak memengaruhi elemen lain
+        item.classList.toggle('open'); // Tambahkan atau hapus kelas `open`
+        
+        // Buka atau tutup sub-menu
+        const submenu = item.querySelector('.submenu');
+        if (submenu) {
+            submenu.classList.toggle('open');
+        }
+    });
+});
+
  // Script untuk Kepala dan Kaki
  const Kepala = document.querySelector('.Kepala');
  const Kaki = document.querySelector('.Kaki');
