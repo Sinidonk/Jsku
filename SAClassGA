@@ -1,5 +1,5 @@
 let state = "Azam"; // State awal diatur ke "Azam"
-const button = document.getElementById("susun");
+const button = document.getElementById("Susun");
 
 // Fungsi untuk mengirim state ke iframe
 function sendStateToIframe(state) {
