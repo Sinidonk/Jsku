@@ -13,19 +13,19 @@ function sendStateToIframe(state) {
 // Fungsi untuk mengatur tombol berikutnya dan mengganti background tombol
 function updateButtonState() {
     if (state === "Azam") {
-        button.style.backgroundImage = "url('Gbr/icoC.png')";
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoC.png')";
         state = "Latin";
     } else if (state === "Latin") {
-        button.style.backgroundImage = "url('Gbr/icoD.png')";
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoD.png')";
         state = "Arti";
     } else if (state === "Arti") {
-        button.style.backgroundImage = "url('Gbr/icoE.png')";
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoE.png')";
         state = "Semua";
     } else if (state === "Semua") {
-        button.style.backgroundImage = "url('Gbr/icoA.png')";
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoA.png')";
         state = "Arab";
     } else if (state === "Arab") {
-        button.style.backgroundImage = "url('Gbr/icoB.png')";
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')";
         state = "Azam";
     }
 }
@@ -48,7 +48,7 @@ function loadIframeContent(url) {
 
 // Saat halaman pertama kali dimuat
 document.addEventListener("DOMContentLoaded", () => {
-    button.style.backgroundImage = "url('Gbr/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
+    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
     document.getElementById("Badan").style.display = "block"; // Menampilkan iframe
     sendStateToIframe(state); // Kirim state awal (Azam) ke iframe
 });
