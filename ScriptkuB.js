@@ -1,22 +1,22 @@
 //Script untuk Menu 
- const menuToggle = document.querySelector('.MenuUtama');
- const menu = document.querySelector('.menu');
+ const MenuToggle = document.querySelector('.MenuUtama');
+ const Menu = document.querySelector('.Menu');
  const iframe = document.getElementById('Badan');
 
  function MenuUtama() {
- menu.classList.toggle('open');
- iframe.classList.toggle('menu-open');
+ Menu.classList.toggle('open');
+ iframe.classList.toggle('Menu-open');
  }
 
- function toggleSubmenu(el, submenuId) {
- const allSubmenus = document.querySelectorAll('.submenu');
- allSubmenus.forEach(submenu => {
- if (submenu.id !== submenuId) {
- submenu.classList.remove('open');
+ function toggleSubMenu(el, SubMenuId) {
+ const allSubMenus = document.querySelectorAll('.SubMenu');
+ allSubMenus.forEach(SubMenu => {
+ if (SubMenu.id !== SubMenuId) {
+ SubMenu.classList.remove('open');
  }
  });
- const submenu = document.getElementById(submenuId);
- submenu.classList.toggle('open');
+ const SubMenu = document.getElementById(SubMenuId);
+ SubMenu.classList.toggle('open');
  }
 
  function loadcontent(page) {
@@ -25,12 +25,12 @@
  }
 
  function closeMenu() {
- menu.classList.remove('open');
- iframe.classList.remove('menu-open');
+ Menu.classList.remove('open');
+ iframe.classList.remove('Menu-open');
  }
 
  document.addEventListener('click', (e) => {
- if (!menu.contains(e.target) && !e.target.classList.contains('MenuUtama') && !e.target.closest('.menu') && !e.target.closest('#Badan')) {
+ if (!Menu.contains(e.target) && !e.target.classList.contains('MenuUtama') && !e.target.closest('.Menu') && !e.target.closest('#Badan')) {
  closeMenu();
  }
  });
@@ -41,15 +41,15 @@
  }
  });
 
-document.querySelectorAll('.menu li.has-submenu').forEach(item => {
+document.querySelectorAll('.Menu li.has-SubMenu').forEach(item => {
     item.addEventListener('click', (e) => {
         e.stopPropagation(); // Mencegah bubbling agar tidak memengaruhi elemen lain
         item.classList.toggle('open'); // Tambahkan atau hapus kelas `open`
         
-        // Buka atau tutup sub-menu
-        const submenu = item.querySelector('.submenu');
-        if (submenu) {
-            submenu.classList.toggle('open');
+        // Buka atau tutup sub-Menu
+        const SubMenu = item.querySelector('.SubMenu');
+        if (SubMenu) {
+            SubMenu.classList.toggle('open');
         }
     });
 });
