@@ -1,22 +1,22 @@
 //Script untuk Menu 
- const menuToggle = document.querySelector('.MenuUtama');
- const menu = document.querySelector('.menu');
+ const MenuToggle = document.querySelector('.MenuUtama');
+ const Menu = document.querySelector('.Menu');
  const iframe = document.getElementById('Badan');
 
  function MenuUtama() {
- menu.classList.toggle('open');
- iframe.classList.toggle('menu-open');
+ Menu.classList.toggle('open');
+ iframe.classList.toggle('Menu-open');
  }
 
- function toggleSubmenu(el, submenuId) {
- const allSubmenus = document.querySelectorAll('.submenu');
- allSubmenus.forEach(submenu => {
- if (submenu.id !== submenuId) {
- submenu.classList.remove('open');
+ function toggleSubMenu(el, SubMenuId) {
+ const allSubMenus = document.querySelectorAll('.SubMenu');
+ allSubMenus.forEach(SubMenu => {
+ if (SubMenu.id !== SubMenuId) {
+ SubMenu.classList.remove('open');
  }
  });
- const submenu = document.getElementById(submenuId);
- submenu.classList.toggle('open');
+ const SubMenu = document.getElementById(SubMenuId);
+ SubMenu.classList.toggle('open');
  }
 
  function loadcontent(page) {
@@ -25,12 +25,12 @@
  }
 
  function closeMenu() {
- menu.classList.remove('open');
- iframe.classList.remove('menu-open');
+ Menu.classList.remove('open');
+ iframe.classList.remove('Menu-open');
  }
 
  document.addEventListener('click', (e) => {
- if (!menu.contains(e.target) && !e.target.classList.contains('MenuUtama') && !e.target.closest('.menu') && !e.target.closest('#Badan')) {
+ if (!Menu.contains(e.target) && !e.target.classList.contains('MenuUtama') && !e.target.closest('.Menu') && !e.target.closest('#Badan')) {
  closeMenu();
  }
  });
@@ -41,15 +41,15 @@
  }
  });
 
-document.querySelectorAll('.menu li.has-submenu').forEach(item => {
+document.querySelectorAll('.Menu li.has-SubMenu').forEach(item => {
     item.addEventListener('click', (e) => {
         e.stopPropagation(); // Mencegah bubbling agar tidak memengaruhi elemen lain
         item.classList.toggle('open'); // Tambahkan atau hapus kelas `open`
         
-        // Buka atau tutup sub-menu
-        const submenu = item.querySelector('.submenu');
-        if (submenu) {
-            submenu.classList.toggle('open');
+        // Buka atau tutup sub-Menu
+        const SubMenu = item.querySelector('.SubMenu');
+        if (SubMenu) {
+            SubMenu.classList.toggle('open');
         }
     });
 });
@@ -80,7 +80,8 @@ document.querySelectorAll('.menu li.has-submenu').forEach(item => {
  document.addEventListener('scroll', hideKepalaKaki);
  iframe.addEventListener('click', hideKepalaKaki);
 
-//
+// Script Agar Iframe Punya Kendali Sendiri
+
 // Fungsi untuk memproses konten dalam iframe setelah dimuat
         function processIframeContent() {
             const iframe = document.getElementById('Badan');
@@ -144,7 +145,56 @@ document.querySelectorAll('.menu li.has-submenu').forEach(item => {
             }
         });
 
-//
+// Fungsi untuk mendapatkan ukuran font saat ini
+        function getCurrentFontSize(element) {
+            const computedStyle = window.getComputedStyle(element);
+            return parseFloat(computedStyle.fontSize); // Ambil ukuran font yang sedang tampil
+        }
+
+        // Inisialisasi ukuran font saat ini
+        let currentFontSize = 16; // Default font size
+        const minFontSize = 2; // Batas minimum ukuran font
+
+        // Fungsi untuk menangani perubahan ukuran font di dalam iframe
+        function adjustFontSizeInIframe(increase) {
+            const iframeDocument = document.getElementById('Badan').contentWindow.document;
+            const childElements = iframeDocument.querySelectorAll('*');
+            
+            childElements.forEach(child => {
+                const isRtlText = child.classList.contains('rtl-text');
+                let fontSize = getCurrentFontSize(child);
+                
+                // Jika elemen bukan teks Arab atau sudah lebih kecil, sesuaikan ukuran font
+                if (!isRtlText || fontSize < 30) { 
+                    if (increase) {
+                        fontSize += 2; // Besarkan font
+                    } else {
+                        if (fontSize > minFontSize) {
+                            fontSize -= 2; // Perkecil font
+                        }
+                    }
+                    child.style.fontSize = fontSize + 'px';
+                }
+            });
+        }
+
+        // Event listener untuk memBesar teks di dalam iframe
+        document.getElementById('Besar').addEventListener('click', () => {
+            adjustFontSizeInIframe(true); // Besarkan font
+        });
+
+        // Event listener untuk memKecil teks di dalam iframe
+        document.getElementById('Kecil').addEventListener('click', () => {
+            adjustFontSizeInIframe(false); // Perkecil font
+        });
+
+        // Fungsi untuk menampilkan iframe setelah tombol Panggil diklik
+        function tampilkanIframe() {
+            document.getElementById('Badan').style.display = 'block'; // Menampilkan iframe
+        }
+
+        // Event listener untuk tombol Panggil
+        document.getElementById('panggilBtn').addEventListener('click', tampilkanIframe);
 
 
 // Fungsi untuk mengganti background dan teks di dalam iframe
@@ -203,120 +253,6 @@ function tampilkanIframe() {
 // Event listener untuk tombol Panggil
 document.getElementById("Mode").addEventListener("click", tampilkanIframe);
 
-//
-
-
-
- // Fungsi untuk mendapatkan ukuran font saat ini
-        function getCurrentFontSize(element) {
-            const computedStyle = window.getComputedStyle(element);
-            return parseFloat(computedStyle.fontSize); // Ambil ukuran font yang sedang tampil
-        }
-
-        // Inisialisasi ukuran font saat ini
-        let currentFontSize = 16; // Default font size
-        const minFontSize = 2; // Batas minimum ukuran font
-
-        // Fungsi untuk menangani perubahan ukuran font di dalam iframe
-        function adjustFontSizeInIframe(increase) {
-            const iframeDocument = document.getElementById('Badan').contentWindow.document;
-            const childElements = iframeDocument.querySelectorAll('*');
-            
-            childElements.forEach(child => {
-                const isRtlText = child.classList.contains('rtl-text');
-                let fontSize = getCurrentFontSize(child);
-                
-                // Jika elemen bukan teks Arab atau sudah lebih kecil, sesuaikan ukuran font
-                if (!isRtlText || fontSize < 30) { 
-                    if (increase) {
-                        fontSize += 2; // Besarkan font
-                    } else {
-                        if (fontSize > minFontSize) {
-                            fontSize -= 2; // Perkecil font
-                        }
-                    }
-                    child.style.fontSize = fontSize + 'px';
-                }
-            });
-        }
-
-        // Event listener untuk memBesar teks di dalam iframe
-        document.getElementById('Besar').addEventListener('click', () => {
-            adjustFontSizeInIframe(true); // Besarkan font
-        });
-
-        // Event listener untuk memKecil teks di dalam iframe
-        document.getElementById('Kecil').addEventListener('click', () => {
-            adjustFontSizeInIframe(false); // Perkecil font
-        });
-
-        // Fungsi untuk menampilkan iframe setelah tombol Panggil diklik
-        function tampilkanIframe() {
-            document.getElementById('Badan').style.display = 'block'; // Menampilkan iframe
-        }
-
-        // Event listener untuk tombol Panggil
-        document.getElementById('panggilBtn').addEventListener('click', tampilkanIframe);
-
-//
-let state = "Azam"; // State awal diatur ke "Azam"
-const button = document.getElementById("susun");
-
-// Fungsi untuk mengirim state ke iframe
-function sendStateToIframe(state) {
-    const iframe = document.getElementById("Badan");
-    const iframeWindow = iframe.contentWindow;
-
-    // Kirim pesan ke iframe dengan state terbaru
-    iframeWindow.postMessage({ type: "updateState", state }, "*");
-}
-
-// Fungsi untuk mengatur tombol berikutnya dan mengganti background tombol
-function updateButtonState() {
-    if (state === "Azam") {
-        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoC.png')";
-        state = "Latin";
-    } else if (state === "Latin") {
-        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoD.png')";
-        state = "Arti";
-    } else if (state === "Arti") {
-        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoE.png')";
-        state = "Semua";
-    } else if (state === "Semua") {
-        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoA.png')";
-        state = "Arab";
-    } else if (state === "Arab") {
-        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')";
-        state = "Azam";
-    }
-}
-
-// Event listener untuk tombol
-button.addEventListener("click", () => {
-    sendStateToIframe(state); // Kirim state terbaru ke iframe
-    updateButtonState(); // Perbarui state tombol
-});
-
-// Fungsi untuk memuat konten dalam iframe
-function loadIframeContent(url) {
-    const iframe = document.getElementById("Badan");
-    iframe.src = url;
-
-    iframe.onload = () => {
-        sendStateToIframe(state); // Kirim state awal ke iframe setelah dimuat
-    };
-}
-
-// Saat halaman pertama kali dimuat
-document.addEventListener("DOMContentLoaded", () => {
-    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
-    document.getElementById("Badan").style.display = "block"; // Menampilkan iframe
-    sendStateToIframe(state); // Kirim state awal (Azam) ke iframe
-});
-
-//
-
-
 // Script untuk mengatur pergantian iframe (utama)
         let iframeIndex = 0;
         const iframe1 = document.getElementById('iframe1');
@@ -337,4 +273,52 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set interval untuk mengganti iframe setiap 10d (10000 ms)
         setInterval(toggleIframes, 10000);
 
+let state = "Azam"; // State awal
+const button = document.getElementById("Susun");
 
+// Fungsi kirim state ke iframe
+function sendStateToIframe(state) {
+    const iframe = document.getElementById("Badan");
+    const iframeWindow = iframe.contentWindow;
+    console.log(`[DEBUG] Mengirim state ke iframe: ${state}`);
+    iframeWindow.postMessage({ type: "updateState", state }, "*");
+}
+
+// Fungsi update tombol dan background
+function updateButtonState() {
+    console.log(`[DEBUG] State sebelum update: ${state}`);
+    if (state === "Azam") {
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoC.png')";
+        state = "Latin";
+    } else if (state === "Latin") {
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoD.png')";
+        state = "Arti";
+    } else if (state === "Arti") {
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoE.png')";
+        state = "Semua";
+    } else if (state === "Semua") {
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoA.png')";
+        state = "Arab";
+    } else if (state === "Arab") {
+        button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')";
+        state = "Azam";
+    }
+    console.log(`[DEBUG] State setelah update: ${state}`);
+    console.log(`[DEBUG] Background tombol saat ini: ${button.style.backgroundImage}`);
+}
+
+// Event listener tombol
+button.addEventListener("click", () => {
+    console.log("Tombol diklik! Event berhasil terdeteksi.");
+    sendStateToIframe(state); // Kirim state terbaru ke iframe
+    updateButtonState(); // Perbarui state tombol
+});
+
+// Saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("[DEBUG] Halaman dimuat. Inisialisasi...");
+    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Background awal
+    document.getElementById("Badan").style.display = "block"; // Menampilkan iframe
+    sendStateToIframe(state); // Kirim state awal
+    console.log(`[DEBUG] Background tombol awal: ${button.style.backgroundImage}`);
+});
