@@ -1,16 +1,15 @@
-let state = "Azam"; // State awal diatur ke "Azam"
+let state = "Azam"; // State awal
 const button = document.getElementById("Susun");
 
-// Fungsi untuk mengirim state ke iframe
+// Fungsi kirim state ke iframe
 function sendStateToIframe(state) {
     const iframe = document.getElementById("Badan");
     const iframeWindow = iframe.contentWindow;
-
     console.log(`[DEBUG] Mengirim state ke iframe: ${state}`);
     iframeWindow.postMessage({ type: "updateState", state }, "*");
 }
 
-// Fungsi untuk mengatur tombol berikutnya dan mengganti background tombol
+// Fungsi update tombol dan background
 function updateButtonState() {
     console.log(`[DEBUG] State sebelum update: ${state}`);
     if (state === "Azam") {
@@ -33,29 +32,18 @@ function updateButtonState() {
     console.log(`[DEBUG] Background tombol saat ini: ${button.style.backgroundImage}`);
 }
 
-// Event listener untuk tombol
+// Event listener tombol
 button.addEventListener("click", () => {
-    console.log(`[DEBUG] Tombol diklik! State saat ini: ${state}`);
+    console.log("Tombol diklik! Event berhasil terdeteksi.");
     sendStateToIframe(state); // Kirim state terbaru ke iframe
     updateButtonState(); // Perbarui state tombol
 });
 
-// Fungsi untuk memuat konten dalam iframe
-function loadIframeContent(url) {
-    const iframe = document.getElementById("Badan");
-    iframe.src = url;
-
-    iframe.onload = () => {
-        console.log(`[DEBUG] Konten iframe dimuat dengan URL: ${url}`);
-        sendStateToIframe(state); // Kirim state awal ke iframe setelah dimuat
-    };
-}
-
-// Saat halaman pertama kali dimuat
+// Saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
     console.log("[DEBUG] Halaman dimuat. Inisialisasi...");
-    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Tombol dimulai dengan gambar icoB.png
+    button.style.backgroundImage = "url('https://sinidonk.github.io/Gbrku/icoB.png')"; // Background awal
     document.getElementById("Badan").style.display = "block"; // Menampilkan iframe
-    sendStateToIframe(state); // Kirim state awal (Azam) ke iframe
+    sendStateToIframe(state); // Kirim state awal
     console.log(`[DEBUG] Background tombol awal: ${button.style.backgroundImage}`);
 });
