@@ -1,4 +1,31 @@
-1// Fungsi untuk memproses konten dalam iframe setelah dimuat
+// Script Fungsi Pemanggilan Css Untul Konten Iframe.
+document.getElementById('Badan').addEventListener('load', function() {
+    const iframe = document.getElementById('Badan'); // Akses elemen iframe
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document; // Dokumen di dalam iframe
+
+    console.log('Iframe berhasil dimuat.');
+
+    // Buat elemen link untuk file CSS pertama
+    const link1 = iframeDoc.createElement('link');
+    link1.rel = 'stylesheet';
+    link1.href = 'https://sinidonk.github.io/Cssku/SFontku.css';
+
+    const link2 = iframeDoc.createElement('link');
+    link2.rel = 'stylesheet';
+    link2.href = '<https://sinidonk.github.io/Cssku/Styleku.css';
+
+    // Tambahkan elemen link ke head dokumen iframe
+    iframeDoc.head.appendChild(link1);
+    iframeDoc.head.appendChild(link2);
+
+    console.log('CSS pertama:', link1.href);
+    console.log('CSS kedua:', link2.href);
+});
+
+
+
+
+// Script Fungsi untuk Resize konten dalam iframe
         function processIframeContent() {
             const iframe = document.getElementById('Badan');
             const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
