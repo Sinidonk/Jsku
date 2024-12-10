@@ -1,20 +1,42 @@
-// Elemen-elemen utama
+// ** Elemen-elemen utama **
 const MenuToggle = document.querySelector('.MenuUtama');
 const DMenu = document.querySelector('.DMenu');
 const iframe = document.getElementById('Badan');
 const Kepala = document.querySelector('.Kepala');
 const Kaki = document.querySelector('.Kaki');
+let isHeaderClicked = false; // Status untuk Header
 
-// Fungsi toggle menu utama
-function toggleDMenu() {
-    DMenu.classList.toggle('open');
-    iframe.classList.toggle('DMenu-open');
+// ** Fungsi terkait Kepala dan Kaki **
+function toggleKepalaKaki(show) {
+    Kepala.style.display = show ? 'block' : 'none';
+    Kaki.style.display = show ? 'block' : 'none';
 }
 
-// Fungsi menutup menu utama
+// ** Fungsi untuk toggle Header **
+function toggleHeader() {
+    isHeaderClicked = !isHeaderClicked; // Toggle status Header
+    if (isHeaderClicked) {
+        iframe.classList.remove('DMenu-open'); // Hilangkan dorongan ke iframe
+    } else {
+        if (DMenu.classList.contains('open')) {
+            iframe.classList.add('DMenu-open'); // Kembalikan dorongan jika menu terbuka
+        }
+    }
+}
+
+// ** Fungsi terkait menu utama **
+function toggleDMenu() {
+    DMenu.classList.toggle('open');
+    if (!isHeaderClicked) {
+        iframe.classList.toggle('DMenu-open'); // Dorong iframe hanya jika Header tidak diaktifkan
+    }
+}
+
 function closeDMenu() {
-    DMenu.classList.remove('open');
-    iframe.classList.remove('DMenu-open');
+    DMenu.classList.remove('open'); // Tutup menu utama
+    if (!isHeaderClicked) {
+        iframe.classList.remove('DMenu-open'); // Kembalikan iframe ke posisi semula jika terdorong
+    }
 }
 
 // Fungsi menutup semua dropdown
@@ -26,7 +48,7 @@ function closeAllDropdowns() {
     });
 }
 
-// Fungsi memuat file ke iframe
+// ** Fungsi iframe **
 function loadcontent(page) {
     if (iframe) {
         iframe.src = page;
@@ -36,39 +58,22 @@ function loadcontent(page) {
     }
 }
 
-// Fungsi toggle tampilan Kepala dan Kaki
-function toggleKepalaKaki(show) {
-    Kepala.style.display = show ? 'block' : 'none';
-    Kaki.style.display = show ? 'block' : 'none';
-}
-
-// Event Listener
+// ** Event Listener **
+// Menu toggle
 MenuToggle.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleDMenu();
 });
 
+// Klik di luar menu menutup menu dan dropdown
 document.addEventListener('click', (e) => {
     if (!DMenu.contains(e.target) && !e.target.closest('.MenuUtama')) {
-        closeDMenu();
+        closeDMenu(); // Tutup menu
     }
-    closeAllDropdowns();
+    closeAllDropdowns(); // Tutup semua dropdown
 });
 
-// Tambahkan event listener ke iframe untuk mendeteksi klik di dalam iframe
-iframe.addEventListener('load', () => {
-    const iframeDoc = iframe.contentWindow.document;
-
-    // Tutup DMenu jika ada klik di iframe
-    iframeDoc.addEventListener('click', () => {
-        closeDMenu();
-    });
-
-    // Event tambahan untuk toggle Kepala dan Kaki
-    ['scroll', 'click'].forEach(event => iframeDoc.addEventListener(event, () => toggleKepalaKaki(false)));
-    iframeDoc.addEventListener('dblclick', () => toggleKepalaKaki(true));
-});
-
+// Klik pada item dropdown
 document.querySelectorAll('.Menuli.Hsm').forEach(item => {
     item.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -79,52 +84,54 @@ document.querySelectorAll('.Menuli.Hsm').forEach(item => {
     });
 });
 
+// Event pada iframe
+iframe.addEventListener('load', () => {
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+    // Menangani dropdown di dalam iframe
+    const menuItems = iframeDoc.querySelectorAll('.Menuli.Hsm');
+    menuItems.forEach(menuItem => {
+        menuItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Tutup semua dropdown lain
+            menuItems.forEach(item => {
+                if (item !== menuItem) {
+                    item.classList.remove('open');
+                    const SubMenu = item.querySelector('.SubMenu');
+                    if (SubMenu) SubMenu.classList.remove('open');
+                }
+            });
+
+            // Toggle dropdown untuk menu yang diklik
+            menuItem.classList.toggle('open');
+            const SubMenu = menuItem.querySelector('.SubMenu');
+            if (SubMenu) SubMenu.classList.toggle('open');
+        });
+    });
+
+    // Tutup semua dropdown saat klik di luar iframe
+    iframeDoc.addEventListener('click', () => {
+        closeDMenu();
+    });
+
+    // Toggle Kepala dan Kaki di iframe
+    ['scroll', 'click'].forEach(event => iframeDoc.addEventListener(event, () => toggleKepalaKaki(false)));
+    iframeDoc.addEventListener('dblclick', () => toggleKepalaKaki(true));
+});
+
+// Event untuk document
 document.addEventListener('dblclick', () => toggleKepalaKaki(true));
 ['scroll'].forEach(event => document.addEventListener(event, () => toggleKepalaKaki(false)));
 
+// Pesan dari iframe untuk menutup menu
 window.addEventListener('message', (event) => {
     if (event.data === 'closeDMenu') {
         closeDMenu();
     }
 });
-// Script Baru
 
-let isHeaderClicked = false; // Status apakah Header sudah diklik
-
-// Fungsi untuk mengatur status Header
-function toggleHeader() {
-    isHeaderClicked = !isHeaderClicked; // Toggle status Header
-    console.log("Header clicked:", isHeaderClicked);
-}
-
-// Fungsi untuk mengontrol menu
-function MenuUtama() {
-    const DMenu = document.getElementById('DMenu');
-    const badan = document.getElementById('Badan');
-
-    if (isHeaderClicked) {
-        // Jika Header sudah diklik, menu tidak mendorong badan
-        if (DMenu.style.left === '0px') {
-            // Sembunyikan menu
-            DMenu.style.left = '-215px';
-        } else {
-            // Tampilkan menu tanpa mendorong badan
-            DMenu.style.left = '0px';
-        }
-        // Pastikan margin badan tidak berubah
-        badan.style.marginLeft = '0';
-    } else {
-        // Jika Header belum diklik, menu mendorong badan
-        if (DMenu.style.left === '0px') {
-            // Sembunyikan menu
-            DMenu.style.left = '-215px';
-            badan.style.marginLeft = '0'; // Kembalikan posisi badan
-        } else {
-            // Tampilkan menu dan dorong badan
-            DMenu.style.left = '0px';
-            badan.style.marginLeft = '200px'; // Geser badan ke kanan
-        }
-    }
-}
-
-
+// Event untuk Header
+document.querySelector('.Header').addEventListener('click', (e) => {
+    toggleHeader();
+});
