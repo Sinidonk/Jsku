@@ -87,3 +87,44 @@ window.addEventListener('message', (event) => {
         closeDMenu();
     }
 });
+// Script Baru
+
+let isHeaderClicked = false; // Status apakah Header sudah diklik
+
+// Fungsi untuk mengatur status Header
+function toggleHeader() {
+    isHeaderClicked = !isHeaderClicked; // Toggle status Header
+    console.log("Header clicked:", isHeaderClicked);
+}
+
+// Fungsi untuk mengontrol menu
+function MenuUtama() {
+    const DMenu = document.getElementById('DMenu');
+    const badan = document.getElementById('Badan');
+
+    if (isHeaderClicked) {
+        // Jika Header sudah diklik, menu tidak mendorong badan
+        if (DMenu.style.left === '0px') {
+            // Sembunyikan menu
+            DMenu.style.left = '-215px';
+        } else {
+            // Tampilkan menu tanpa mendorong badan
+            DMenu.style.left = '0px';
+        }
+        // Pastikan margin badan tidak berubah
+        badan.style.marginLeft = '0';
+    } else {
+        // Jika Header belum diklik, menu mendorong badan
+        if (DMenu.style.left === '0px') {
+            // Sembunyikan menu
+            DMenu.style.left = '-215px';
+            badan.style.marginLeft = '0'; // Kembalikan posisi badan
+        } else {
+            // Tampilkan menu dan dorong badan
+            DMenu.style.left = '0px';
+            badan.style.marginLeft = '200px'; // Geser badan ke kanan
+        }
+    }
+}
+
+
