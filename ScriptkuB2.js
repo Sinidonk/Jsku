@@ -1,30 +1,20 @@
-// Script untuk Menu
+// Elemen-elemen utama
 const MenuToggle = document.querySelector('.MenuUtama');
-const Menu = document.querySelector('.Menu');
+const DMenu = document.querySelector('.DMenu');
 const iframe = document.getElementById('Badan');
 const Kepala = document.querySelector('.Kepala');
 const Kaki = document.querySelector('.Kaki');
 
 // Fungsi toggle menu utama
-function toggleMenu() {
-    Menu.classList.toggle('open');
-    iframe.classList.toggle('Menu-open');
+function toggleDMenu() {
+    DMenu.classList.toggle('open');
+    iframe.classList.toggle('DMenu-open');
 }
 
 // Fungsi menutup menu utama
-function closeMenu() {
-    Menu.classList.remove('open');
-    iframe.classList.remove('Menu-open');
-}
-
-// Fungsi memuat file ke iframe
-function loadcontent(page) {
-    if (iframe) {
-        iframe.src = page; // Mengatur sumber file ke iframe
-        closeMenu(); // Menutup menu setelah file dimuat
-    } else {
-        console.error("Iframe dengan ID 'Badan' tidak ditemukan.");
-    }
+function closeDMenu() {
+    DMenu.classList.remove('open');
+    iframe.classList.remove('DMenu-open');
 }
 
 // Fungsi menutup semua dropdown
@@ -36,53 +26,64 @@ function closeAllDropdowns() {
     });
 }
 
-// Menangani klik pada tombol menu utama
+// Fungsi memuat file ke iframe
+function loadcontent(page) {
+    if (iframe) {
+        iframe.src = page;
+        closeDMenu();
+    } else {
+        console.error("Iframe dengan ID 'Badan' tidak ditemukan.");
+    }
+}
+
+// Fungsi toggle tampilan Kepala dan Kaki
+function toggleKepalaKaki(show) {
+    Kepala.style.display = show ? 'block' : 'none';
+    Kaki.style.display = show ? 'block' : 'none';
+}
+
+// Event Listener
 MenuToggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    toggleMenu();
+    toggleDMenu();
 });
 
-// Menangani klik pada area luar
 document.addEventListener('click', (e) => {
-    if (!Menu.contains(e.target) && !e.target.closest('.MenuUtama')) {
-        closeMenu();
+    if (!DMenu.contains(e.target) && !e.target.closest('.MenuUtama')) {
+        closeDMenu();
     }
-    closeAllDropdowns(); // Tutup semua dropdown
+    closeAllDropdowns();
 });
 
-// Menangani pesan dari iframe
-window.addEventListener('message', (event) => {
-    if (event.data === 'closeMenu') {
-        closeMenu();
-    }
+// Tambahkan event listener ke iframe untuk mendeteksi klik di dalam iframe
+iframe.addEventListener('load', () => {
+    const iframeDoc = iframe.contentWindow.document;
+
+    // Tutup DMenu jika ada klik di iframe
+    iframeDoc.addEventListener('click', () => {
+        closeDMenu();
+    });
+
+    // Event tambahan untuk toggle Kepala dan Kaki
+    ['scroll', 'click'].forEach(event => iframeDoc.addEventListener(event, () => toggleKepalaKaki(false)));
+    iframeDoc.addEventListener('dblclick', () => toggleKepalaKaki(true));
 });
 
-// Menangani klik pada item menu dengan dropdown
 document.querySelectorAll('.Menuli.Hsm').forEach(item => {
     item.addEventListener('click', (e) => {
         e.stopPropagation();
-        closeAllDropdowns(); // Tutup semua dropdown lain
+        closeAllDropdowns();
         item.classList.toggle('open');
         const SubMenu = item.querySelector('.SubMenu');
         if (SubMenu) SubMenu.classList.toggle('open');
     });
 });
 
-// Script untuk Kepala dan Kaki
-function toggleKepalaKaki(show) {
-    Kepala.style.display = show ? 'block' : 'none';
-    Kaki.style.display = show ? 'block' : 'none';
-}
-
-// Menangani double-click untuk menampilkan Kepala dan Kaki
 document.addEventListener('dblclick', () => toggleKepalaKaki(true));
-
-// Mengatur event pada iframe untuk menyembunyikan Kepala dan Kaki
-iframe.addEventListener('load', () => {
-    const iframeDoc = iframe.contentWindow.document;
-    ['scroll', 'click'].forEach(event => iframeDoc.addEventListener(event, () => toggleKepalaKaki(false)));
-    iframeDoc.addEventListener('dblclick', () => toggleKepalaKaki(true));
-});
-
-// Sembunyikan Kepala dan Kaki saat scroll di dokumen utama
 ['scroll'].forEach(event => document.addEventListener(event, () => toggleKepalaKaki(false)));
+
+window.addEventListener('message', (event) => {
+    if (event.data === 'closeDMenu') {
+        closeDMenu();
+    }
+});
