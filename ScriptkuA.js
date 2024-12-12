@@ -2,27 +2,7 @@
 const MenuToggle = document.querySelector('.MenuUtama');
 const DMenu = document.querySelector('.DMenu');
 const iframe = document.getElementById('Badan');
-const Kepala = document.querySelector('.Kepala');
-const Kaki = document.querySelector('.Kaki');
 let isHeaderClicked = false; // Status untuk Header
-
-// ** Fungsi terkait Kepala dan Kaki **
-function toggleKepalaKaki(show) {
-    Kepala.style.display = show ? 'block' : 'none';
-    Kaki.style.display = show ? 'block' : 'none';
-}
-
-// ** Fungsi untuk toggle Header **
-function toggleHeader() {
-    isHeaderClicked = !isHeaderClicked; // Toggle status Header
-    if (isHeaderClicked) {
-        iframe.classList.remove('DMenu-open'); // Hilangkan dorongan ke iframe
-    } else {
-        if (DMenu.classList.contains('open')) {
-            iframe.classList.add('DMenu-open'); // Kembalikan dorongan jika menu terbuka
-        }
-    }
-}
 
 // ** Fungsi terkait menu utama **
 function toggleDMenu() {
@@ -59,7 +39,6 @@ function loadcontent(page) {
 }
 
 // ** Event Listener **
-
 // Menu toggle
 MenuToggle.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -78,19 +57,10 @@ document.addEventListener('click', (e) => {
 document.querySelectorAll('.Menuli.Hsm').forEach(item => {
     item.addEventListener('click', (e) => {
         e.stopPropagation();
-
-        // Periksa status "open" elemen ini
-        const isOpen = item.classList.contains('open');
-
-        // Tutup semua dropdown terlebih dahulu
         closeAllDropdowns();
-
-        // Jika elemen sebelumnya terbuka, biarkan tetap tertutup
-        if (!isOpen) {
-            item.classList.add('open'); // Buka dropdown
-            const SubMenu = item.querySelector('.SubMenu');
-            if (SubMenu) SubMenu.classList.add('open');
-        }
+        item.classList.toggle('open');
+        const SubMenu = item.querySelector('.SubMenu');
+        if (SubMenu) SubMenu.classList.toggle('open');
     });
 });
 
@@ -124,22 +94,19 @@ iframe.addEventListener('load', () => {
     iframeDoc.addEventListener('click', () => {
         closeDMenu();
     });
-
-    // Toggle Kepala dan Kaki di iframe
-    ['scroll', 'click'].forEach(event => iframeDoc.addEventListener(event, () => toggleKepalaKaki(false)));
-    iframeDoc.addEventListener('dblclick', () => toggleKepalaKaki(true));
 });
 
-// Event untuk document
-document.addEventListener('dblclick', () => toggleKepalaKaki(true));
-['scroll'].forEach(event => document.addEventListener(event, () => toggleKepalaKaki(false)));
-
-// Pesan dari iframe untuk menutup menu
-window.addEventListener('message', (event) => {
-    if (event.data === 'closeDMenu') {
-        closeDMenu();
+// ** Fungsi untuk toggle Header **
+function toggleHeader() {
+    isHeaderClicked = !isHeaderClicked; // Toggle status Header
+    if (isHeaderClicked) {
+        iframe.classList.remove('DMenu-open'); // Hilangkan dorongan ke iframe
+    } else {
+        if (DMenu.classList.contains('open')) {
+            iframe.classList.add('DMenu-open'); // Kembalikan dorongan jika menu terbuka
+        }
     }
-});
+}
 
 // Event untuk Header
 document.querySelector('.Header').addEventListener('click', (e) => {
