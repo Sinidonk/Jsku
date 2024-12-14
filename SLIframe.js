@@ -12,7 +12,7 @@ document.getElementById('Badan').addEventListener('load', function() {
 
     const link2 = iframeDoc.createElement('link');
     link2.rel = 'stylesheet';
-    link2.href = '<https://sinidonk.github.io/Cssku/Styleku.css';
+    link2.href = '<https://sinidonk.github.io/Cssku/StylekuB.css';
 
     // Tambahkan elemen link ke head dokumen iframe
     iframeDoc.head.appendChild(link1);
