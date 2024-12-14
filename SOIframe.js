@@ -1,4 +1,4 @@
-			// Mengirim pesan ke parent window saat ada interaksi dalam iframe (click, scroll, dblclick, touchstart)
+// Fungsi untuk mengirim pesan saat interaksi dalam iframe
 if (window.top !== window.self) {
     // Kirim pesan saat ada klik dalam iframe
     document.addEventListener('click', () => {
@@ -25,19 +25,17 @@ if (window.top !== window.self) {
 }
 
 // Kirim pesan ke halaman utama (parent window) untuk menutup menu saat ada interaksi
-        document.addEventListener('click', function() {
-            parent.postMessage("closeMenu", "*"); // Mengirim pesan ke halaman utama
-        });
+document.addEventListener('click', function() {
+    parent.postMessage("closeMenu", "*"); // Mengirim pesan ke halaman utama
+});
 
-//Untuk Loading Iframe
-// Kirim pesan ke parent window (halaman utama) setelah konten selesai dimuat
-        window.onload = function() {
-            // Mengirim pesan ke window induk (halaman utama)
-            window.parent.postMessage("IframeLoaded", "*");
-        };
+// Untuk Loading Iframe - Mengirim pesan ke parent window setelah konten selesai dimuat
+window.onload = function() {
+    // Mengirim pesan ke window induk (halaman utama)
+    window.parent.postMessage("IframeLoaded", "*");
+};
 
-//Pesan Pemanggil Clas
-// Mendengarkan pesan dari halaman utama
+// Mendengarkan pesan dari halaman utama untuk mengupdate state
 window.addEventListener("message", (event) => {
     if (!event.data || event.data.type !== "updateState") return;
 
@@ -55,13 +53,13 @@ window.addEventListener("message", (event) => {
 
     // Menangani state
     if (state === "Azam") {
-        showElements(["judul","arte", "arab", "azam"], tampilanElement);
+        showElements(["judul", "arte", "arab", "azam"], tampilanElement);
     } else if (state === "Latin") {
-        showElements(["judul","arte", "arab", "latin"], tampilanElement);
+        showElements(["judul", "arte", "arab", "latin"], tampilanElement);
     } else if (state === "Arti") {
-        showElements(["judul","arte", "arab", "arti"], tampilanElement);
+        showElements(["judul", "arte", "arab", "arti"], tampilanElement);
     } else if (state === "Semua") {
-        showElements(["judul","arte", "arab", "azam", "latin", "arti"], tampilanElement);
+        showElements(["judul", "arte", "arab", "azam", "latin", "arti"], tampilanElement);
     } else if (state === "Arab") {
         combineArabicWithTitle(tampilanElement); // Gabungkan arab saat state Arab
     }
@@ -133,7 +131,7 @@ function combineArabicWithTitle(parentElement) {
     });
 }
 
-// Fungsi untuk menangani pesan yang diterima dari iframe
+// Fungsi untuk menangani pesan yang diterima dari iframe setelah dimuat
 window.addEventListener("message", function(event) {
     if (event.data === "IframeLoaded") {
         console.log("Pesan diterima dari iframe: IframeLoaded");
