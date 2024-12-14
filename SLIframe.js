@@ -22,69 +22,83 @@ document.getElementById('Badan').addEventListener('load', function() {
     console.log('CSS kedua:', link2.href);
 });
 
+//Reposition Class
+function processIframeContent() {
+    const iframe = document.getElementById('Badan');
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    const tampilanElement = iframeDocument.getElementById('Tampilan');
 
+    if (!tampilanElement) {
+        console.error("Elemen #Tampilan tidak ditemukan dalam iframe.");
+        return;
+    }
 
+    // Sembunyikan semua elemen dalam #Tampilan terlebih dahulu
+    const allElements = tampilanElement.querySelectorAll('*');
+    allElements.forEach(el => {
+        el.style.display = 'none'; // Sembunyikan semua elemen
+    });
 
-// Script Fungsi untuk Resize konten dalam iframe
-        function processIframeContent() {
-            const iframe = document.getElementById('Badan');
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            const tampilanElement = iframeDocument.getElementById('Tampilan');
+    // Ambil semua elemen judul dalam #Tampilan
+    const judulElements = tampilanElement.querySelectorAll(".judul");
 
-            if (!tampilanElement) {
-                console.error("Elemen #Tampilan tidak ditemukan dalam iframe.");
-                return;
-            }
+    judulElements.forEach(judul => {
+        // Tampilkan elemen judul
+        judul.style.display = "block";
 
-            // Sembunyikan semua elemen dalam #Tampilan terlebih dahulu
-            const allElements = tampilanElement.querySelectorAll('*');
-            allElements.forEach(el => {
-                el.style.display = 'none'; // Sembunyikan semua elemen
-            });
+        // Gabungkan elemen arab langsung di tempatnya
+        let sibling = judul.nextElementSibling;
+        let combinedContent = "";
+        let suratInserted = false; // Menandai apakah sudah menyisipkan gabungan surat
 
-            // Ambil semua elemen judul dalam #Tampilan
-            const judulElements = tampilanElement.querySelectorAll(".judul");
-
-            judulElements.forEach(judul => {
-                // Tampilkan elemen judul
-                judul.style.display = "block";
-
-                // Buat div gabungan untuk elemen arab
-                let combinedDiv = document.createElement("div");
-                combinedDiv.className = "surat"; // Tambahkan class surat
-                combinedDiv.style.textAlign = "justify";
-
-                let sibling = judul.nextElementSibling;
-                let combinedContent = "";
-
-                // Gabungkan semua elemen arab di bawah judul
-                while (sibling && !sibling.classList.contains("judul")) {
-                    if (sibling.classList.contains("arab")) {
-                        combinedContent += sibling.innerHTML + " "; // Gabungkan teks arab
-                        sibling.style.display = "none"; // Sembunyikan elemen asli arab
-                    }
-                    sibling = sibling.nextElementSibling;
-                }
-
-                // Masukkan gabungan arab ke dalam div surat
-                if (combinedContent.trim()) {
+        while (sibling && !sibling.classList.contains("judul")) {
+            if (sibling.classList.contains("arab")) {
+                // Gabungkan konten elemen arab
+                combinedContent += sibling.innerHTML + " ";
+                sibling.style.display = "none"; // Sembunyikan elemen asli arab
+            } else if (sibling.classList.contains("arte")) {
+                // Jika ada konten arab yang digabungkan, sisipkan gabungan sebelum elemen arte
+                if (combinedContent.trim() && !suratInserted) {
+                    let combinedDiv = document.createElement("div");
+                    combinedDiv.className = "surat"; // Tambahkan class surat
+                    combinedDiv.style.textAlign = "justify";
                     combinedDiv.innerHTML = combinedContent.trim();
-                    judul.insertAdjacentElement("afterend", combinedDiv); // Tempelkan surat setelah judul
+                    sibling.parentNode.insertBefore(combinedDiv, sibling); // Sisipkan sebelum arte
+                    suratInserted = true;
+                    combinedContent = ""; // Reset gabungan
                 }
-            });
 
-            // Tampilkan hanya judul dan surat yang sudah digabungkan
-            const visibleElements = tampilanElement.querySelectorAll(".judul, .surat");
-            visibleElements.forEach(el => {
-                el.style.display = 'block'; // Pastikan hanya judul dan surat yang ditampilkan
-            });
+                // Tampilkan elemen arte sesuai posisi aslinya
+                sibling.style.display = "block";
+            } else if (sibling.tagName === "BR") {
+                // Tambahkan tag <br> yang berdiri sendiri
+                combinedContent += "<br>";
+            }
+            sibling = sibling.nextElementSibling;
         }
 
-        // Fungsi untuk menangani pesan yang diterima dari iframe
-        window.addEventListener("message", function(event) {
-            if (event.data === "IframeLoaded") {
-                console.log("Pesan diterima dari iframe: IframeLoaded");
-                processIframeContent(); // Proses konten setelah iframe dimuat
-            }
-        });
+        // Jika ada gabungan arab yang belum dimasukkan, tambahkan di akhir sebelum elemen berikutnya
+        if (combinedContent.trim() && !suratInserted) {
+            let combinedDiv = document.createElement("div");
+            combinedDiv.className = "surat"; // Tambahkan class surat
+            combinedDiv.style.textAlign = "justify";
+            combinedDiv.innerHTML = combinedContent.trim();
+            judul.parentNode.insertBefore(combinedDiv, judul.nextElementSibling);
+        }
+    });
+
+    // Tampilkan elemen-elemen yang diperlukan
+    const visibleElements = tampilanElement.querySelectorAll(".judul, .surat, .arte");
+    visibleElements.forEach(el => {
+        el.style.display = 'block'; // Pastikan elemen-elemen ini ditampilkan
+    });
+}
+
+// Fungsi untuk menangani pesan yang diterima dari iframe
+window.addEventListener("message", function(event) {
+    if (event.data === "IframeLoaded") {
+        console.log("Pesan diterima dari iframe: IframeLoaded");
+        processIframeContent(); // Proses konten setelah iframe dimuat
+    }
+});
 
