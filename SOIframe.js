@@ -83,7 +83,7 @@ function combineArabicWithTitle(parentElement) {
         // Pastikan judul tetap terlihat
         judul.style.display = "block";
 
-        // Gabungkan elemen arab langsung di tempatnya
+       // Gabungkan elemen arab langsung di tempatnya
         let sibling = judul.nextElementSibling;
         let combinedContent = "";
         let suratInserted = false; // Menandai apakah sudah menyisipkan gabungan surat
@@ -107,9 +107,6 @@ function combineArabicWithTitle(parentElement) {
 
                 // Tampilkan elemen arte sesuai posisi aslinya
                 sibling.style.display = "block";
-            } else if (sibling.tagName === "BR") {
-                // Tambahkan tag <br> yang berdiri sendiri
-                combinedContent += "<br>";
             }
             sibling = sibling.nextElementSibling;
         }
@@ -131,10 +128,3 @@ function combineArabicWithTitle(parentElement) {
     });
 }
 
-// Fungsi untuk menangani pesan yang diterima dari iframe setelah dimuat
-window.addEventListener("message", function(event) {
-    if (event.data === "IframeLoaded") {
-        console.log("Pesan diterima dari iframe: IframeLoaded");
-        processIframeContent(); // Proses konten setelah iframe dimuat
-    }
-});
